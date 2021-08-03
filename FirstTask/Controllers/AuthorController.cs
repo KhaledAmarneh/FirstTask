@@ -2,7 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using ContosoPizza.Models;
-using ContosoPizza.Services;
+using FirstTask.Resources;
+using System;
+using FirstTask.Interfaces;
+using FirstTask.Entities;
+using System.Threading.Tasks;
 
 namespace FirstTask.Controllers
 {
@@ -10,56 +14,77 @@ namespace FirstTask.Controllers
     [Route("[controller]")]
     public class AuthorController : ControllerBase
     {
-        public AuthorController()
+
+        private readonly InterfaceRepositories<AuthorEntity> _authorRepository;
+        public AuthorController(InterfaceRepositories<AuthorEntity> authorRepository)
         {
+            _authorRepository = authorRepository;
         }
 
         [HttpGet]
-        public ActionResult<List<Author>> GetAll() =>
-            AuthorService.GetAll();
-
-        [HttpGet("{id}")]
-        public ActionResult<Author> Get(int id)
+        public async Task<ActionResult<IEnumerable<AuthorResource>>> GetAll()
         {
-            var author = AuthorService.Get(id);
+            var authors = await _authorRepository.GetAllAsync();
+            if (authors == null)
+                return NotFound("No Authors Yet!");
+            return Ok(authors.Select(author => author.AuthorEntityToResource()).ToList());
 
-            if(author == null)
-                return NotFound();
 
-            return author;
         }
 
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AuthorResource>> Get(int id)
+        {
+
+            var author = await _authorRepository.GetAsync(id);
+            if (author == null)
+                return NotFound($"Author with Id: {id} does not exist.");
+
+            return author.AuthorEntityToResource();
+        }
+
+
         [HttpPost]
-        public IActionResult Create(Author author)
-        {            
-        AuthorService.Add(author);
-        return CreatedAtAction(nameof(Create), new { id = author.Id }, author);       
-         }
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, Author author)
-{
-    if (id != author.Id)
-        return BadRequest();
+        public async Task<ActionResult<AuthorResource>> Create([FromBody] Author author)
+        {
+            var authorEntity = author.AuthorModelToEntity();
+            var authorResource = _authorRepository.CreateAsync(authorEntity);
 
-    var existingAuthor = AuthorService.Get(id);
-    if(existingAuthor is null)
-        return NotFound();
+            return Ok((await authorResource).AuthorEntityToResource());
 
-    AuthorService.Update(author);           
+        }
 
-    return NoContent();
-}
+        [HttpPut("{id}")]
+        public async Task<ActionResult<AuthorResource>> Update(Author author, int id)
+        {
+
+            var x = author.AuthorModelToEntity();
+            x.Id = id;
+            await _authorRepository.UpdateAsync(x, id);
+            return Ok(x.AuthorEntityToResource());
+
+        }
+
         [HttpDelete("{id}")]
-public IActionResult Delete(int id)
-{
-    var author = AuthorService.Get(id);
+        public async Task<ActionResult> Delete(int id)
+        {
+            //    var author = _DataContext.Authors.FirstOrDefault(x => x.Id == id);
 
-    if (author is null)
-        return NotFound();
+            //    if (author != null)
+            //    {
+            //        _DataContext.Authors.Remove(author);
+            //        _DataContext.SaveChanges();
+            //    }
+            //    else
+            //        return NotFound($"author with Id: {id} does not exist.");
+            //    return NoContent();
+            //}
 
-    AuthorService.Delete(id);
 
-    return NoContent();
-}
+            await _authorRepository.DeleteAsync(id);
+            return Ok();
+
+        }
     }
 }

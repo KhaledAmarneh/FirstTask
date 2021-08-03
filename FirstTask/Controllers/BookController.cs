@@ -1,8 +1,12 @@
+using ContosoPizza.Models;
+using FirstTask.Entities;
+using FirstTask.Interfaces;
+using FirstTask.Repositories;
+using FirstTask.Resources;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using ContosoPizza.Models;
-using ContosoPizza.Services;
+using System.Threading.Tasks;
 
 namespace ContosoPizza.Controllers
 {
@@ -10,56 +14,73 @@ namespace ContosoPizza.Controllers
     [Route("[controller]")]
     public class BookController : ControllerBase
     {
-        public BookController()
+
+
+        private readonly InterfaceRepositories<BookEntity> _bookRepository;
+        public BookController(InterfaceRepositories<BookEntity> bookRepository)
         {
+            _bookRepository = bookRepository;
         }
+
+
+
 
         [HttpGet]
-        public ActionResult<List<Book>> GetAll() =>
-            BookService.GetAll();
-
-        [HttpGet("{id}")]
-        public ActionResult<Book> Get(int id)
+        public async Task<ActionResult<IEnumerable<BookResource>>> GetAll()
         {
-            var book = BookService.Get(id);
 
-            if(book == null)
-                return NotFound();
 
-            return book;
+            var books = await _bookRepository.GetAllAsync();
+            if (books == null)
+                return NotFound("No Books Yet!");
+            return Ok(books.Select(book => book.BookEntityToResource()).ToList());
+
+
         }
 
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BookResource>> Get(int id)
+
+        {
+            var book = await _bookRepository.GetAsync(id);
+            if (book == null)
+                return NotFound($"Book with Id: {id} does not exist.");
+
+            return Ok(book.BookEntityToResource());
+        }
+
+
         [HttpPost]
-        public IActionResult Create(Book book)
-        {            
-        BookService.Add(book);
-        return CreatedAtAction(nameof(Create), new { id = book.Id }, book);       
-         }
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, Book book)
-{
-    if (id != book.Id)
-        return BadRequest();
+        public async Task<ActionResult<BookResource>> Create([FromBody] Book book)
+        {
+            var BookEntity = book.BookModelToEntity();
+            var BookResource = _bookRepository.CreateAsync(BookEntity);
 
-    var existingBook = BookService.Get(id);
-    if(existingBook is null)
-        return NotFound();
+            return Ok((await BookResource).BookEntityToResource());
 
-    BookService.Update(book);           
 
-    return NoContent();
-}
+
+
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<BookResource>> Update(Book book, int id)
+        {
+            var x = book.BookModelToEntity();
+            x.Id = id;
+            await _bookRepository.UpdateAsync(x, id);
+            return Ok(x.BookEntityToResource());
+
+
+
+        }
         [HttpDelete("{id}")]
-public IActionResult Delete(int id)
-{
-    var book = BookService.Get(id);
+        public async Task Delete(int id)
+        {
+            await _bookRepository.DeleteAsync(id);
 
-    if (book is null)
-        return NotFound();
+        }
 
-    BookService.Delete(id);
-
-    return NoContent();
-}
     }
 }

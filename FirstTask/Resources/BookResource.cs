@@ -1,11 +1,12 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace ContosoPizza.Models
+namespace FirstTask.Resources
 {
-    public class Book
+    public class BookResource
     {
-       
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Title { get; set; }

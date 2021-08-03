@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ContosoPizza.Models
+namespace FirstTask.Entities
 {
-    public class Author
+    public class AuthorEntity
     {   
+        public int Id { get; set; }
         public string Name { get; set; }
         
     }

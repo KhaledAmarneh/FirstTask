@@ -1,7 +1,11 @@
+using FirstTask.Entities;
+using FirstTask.Interfaces;
+using FirstTask.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +30,15 @@ namespace FirstTask
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+            services.AddDbContext<DataContext>
+   
+           (o => o.UseSqlServer(Configuration.
+            GetConnectionString("FirstDatabase")));
+            services.AddScoped<InterfaceRepositories<BookEntity>, BookRepository>();
+            services.AddScoped<InterfaceRepositories<AuthorEntity>, AuthorRepository>();
+
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
