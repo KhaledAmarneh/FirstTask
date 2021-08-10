@@ -2,7 +2,7 @@ using ContosoPizza.Models;
 using FirstTask.Entities;
 using FirstTask.Resources;
 using System.ComponentModel.DataAnnotations;
-
+using System.Linq;
 
 public static class BookMappingMethods
 
@@ -14,7 +14,9 @@ public static class BookMappingMethods
         {
             Name = book.Name,
             Title = book.Title,
-            Id = book.Id
+            Id = book.Id,
+            Authors = book.Authors.Select(author => author.AuthorEntityToAuthorLiteResource()).ToList()
+
         };
     }
 
@@ -24,7 +26,18 @@ public static class BookMappingMethods
         return new BookEntity
         {
             Name = book.Name,
+
             Title = book.Title,
+        };
+    }
+
+    public static BookLiteResource BookEntityToBookLiteResource(this BookEntity book)
+    {
+        return new BookLiteResource
+        {
+            Name = book.Name,
+            Id = book.Id,
+            Title = book.Title
         };
     }
 

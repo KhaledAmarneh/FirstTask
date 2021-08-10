@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FirstTask.Entities
@@ -9,6 +10,7 @@ namespace FirstTask.Entities
         public string Name { get; set; }
 
         public string Title { get; set; }
-        
+        public List<AuthorEntity> Authors { get; set; }
+
     }
 }

@@ -1,13 +1,15 @@
+using FirstTask.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace FirstTask.Entities
+namespace FirstTask.Resources
+
 {
-    public class AuthorEntity
-    {   
+    public class AuthorLiteResource
+    {
         public int Id { get; set; }
+
         public string Name { get; set; }
-        public List<BookEntity> Books { get; set;}
-        
+
     }
 }

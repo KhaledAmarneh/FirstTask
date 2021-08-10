@@ -7,6 +7,7 @@ using System;
 using FirstTask.Interfaces;
 using FirstTask.Entities;
 using System.Threading.Tasks;
+using ContosoPizza.Controllers;
 
 namespace FirstTask.Controllers
 {
@@ -15,10 +16,14 @@ namespace FirstTask.Controllers
     public class AuthorController : ControllerBase
     {
 
-        private readonly InterfaceRepositories<AuthorEntity> _authorRepository;
-        public AuthorController(InterfaceRepositories<AuthorEntity> authorRepository)
+        private readonly IAuthor _authorRepository;
+        private readonly IBook _bookRepository;
+
+        public AuthorController(IAuthor authorRepository, IBook bookRepository)
         {
             _authorRepository = authorRepository;
+            _bookRepository = bookRepository;
+
         }
 
         [HttpGet]
@@ -49,21 +54,49 @@ namespace FirstTask.Controllers
         public async Task<ActionResult<AuthorResource>> Create([FromBody] Author author)
         {
             var authorEntity = author.AuthorModelToEntity();
-            var authorResource = _authorRepository.CreateAsync(authorEntity);
+            List<int> ListOfBookids = await _authorRepository.GetBookIds(author);
+            if (ListOfBookids?.Count == 0)
+            {
+                throw new Exception("Invalid ids");
+            }
+            else if (author.BookIds.Count != ListOfBookids?.Count)
+            {
 
-            return Ok((await authorResource).AuthorEntityToResource());
-
+                throw new Exception("There is an invalid id");
+            }
+            else
+            {
+                authorEntity.Books = ListOfBookids.Select(async bookId => await _bookRepository.GetAsyncWithoutAuthors(bookId)).Select(x => x.Result).Where(y => y != null).ToList();
+                var authorResource = _authorRepository.CreateAsync(authorEntity);
+                return Ok((await authorResource).AuthorEntityToResource());
+            }
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult<AuthorResource>> Update(Author author, int id)
         {
+            
 
-            var x = author.AuthorModelToEntity();
-            x.Id = id;
-            await _authorRepository.UpdateAsync(x, id);
-            return Ok(x.AuthorEntityToResource());
+            var authorEntity = author.AuthorModelToEntity();
+            authorEntity.Id = id;
+            List<int> ListOfBookids = await _authorRepository.GetBookIds(author);//[1,2]
 
+
+            if (ListOfBookids?.Count == 0)
+            {
+                throw new Exception("Invalid ids");
+            }
+            else if (author.BookIds.Count != ListOfBookids?.Count)
+            {
+                throw new Exception("There is an invalid id");
+            }
+            else
+            {
+                authorEntity.Books = ListOfBookids.Select(async bookId => await _bookRepository.GetAsyncWithoutAuthors(bookId)).Select(x => x.Result).Where(y => y != null).ToList();
+                await _authorRepository.UpdateAsync(authorEntity);
+                return Ok(authorEntity.AuthorEntityToResource());
+            }
         }
 
         [HttpDelete("{id}")]

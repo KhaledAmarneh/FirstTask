@@ -1,3 +1,4 @@
+using ContosoPizza.Controllers;
 using FirstTask.Entities;
 using FirstTask.Interfaces;
 using FirstTask.Repositories;
@@ -35,11 +36,9 @@ namespace FirstTask
    
            (o => o.UseSqlServer(Configuration.
             GetConnectionString("FirstDatabase")));
-            services.AddScoped<InterfaceRepositories<BookEntity>, BookRepository>();
-            services.AddScoped<InterfaceRepositories<AuthorEntity>, AuthorRepository>();
-
-
-
+            services.AddScoped<IBook, BookRepository>();
+            services.AddScoped<IAuthor, AuthorRepository>();
+     
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

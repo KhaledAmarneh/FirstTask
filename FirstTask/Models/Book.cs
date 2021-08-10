@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContosoPizza.Models
@@ -9,6 +10,6 @@ namespace ContosoPizza.Models
         public string Name { get; set; }
 
         public string Title { get; set; }
-        
+        //public ICollection<Author> Authors { get; set; }
     }
 }

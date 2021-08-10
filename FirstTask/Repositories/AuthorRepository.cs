@@ -1,7 +1,7 @@
 ﻿using ContosoPizza.Models;
 using FirstTask.Entities;
 using FirstTask.Interfaces;
-using FirstTask.Resources;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +9,35 @@ using System.Threading.Tasks;
 
 namespace FirstTask.Repositories
 {
-    public class AuthorRepository : InterfaceRepositories<AuthorEntity>
+    public class AuthorRepository : IAuthor
     {
         private readonly DataContext _context;
+
+
+
+
         public AuthorRepository(DataContext context)
         {
 
 
             _context = context;
+
         }
+
+
+        /*public Task Contains(Func<Book, bool> exp) {
+            _context.Books.Where(x => author.BookIds?.Contains(x.Id));[0,3].cont..(x => x.id).toList()[0]
+        }*/
 
 
         public async Task<AuthorEntity> CreateAsync(AuthorEntity author)
         {
             _context.Authors.Add(author);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return author;
         }
+
+
 
         public async Task DeleteAsync(int id)
         {
@@ -34,28 +46,37 @@ namespace FirstTask.Repositories
             if (Author != null)
             {
                 _context.Authors.Remove(Author);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public async Task UpdateAsync(AuthorEntity author, int id)
+        public async Task UpdateAsync(AuthorEntity author)
         {
-            author.Id = id;
-            _context.Authors.Update(author);
-            _context.SaveChanges();
-
-
-
+            var Author = await GetAsync(author.Id); //Tracked from Database
+            Author.Books.Clear(); //Delete old books from the database
+            Author.Books = author.Books; //Here author.books not tracked from database it cointains the required books so we put the books in x.Books(in database)
+            Author.Name = author.Name;
+            _context.Authors.Update(Author);
+            await _context.SaveChangesAsync();
         }
 
-        async Task<IEnumerable<AuthorEntity>> InterfaceRepositories<AuthorEntity>.GetAllAsync()
+        public async Task<IEnumerable<AuthorEntity>> GetAllAsync()
         {
-            return _context.Authors;
+            List<AuthorEntity> Authors = await _context.Authors.Include(x => x.Books).ToListAsync();
+            return Authors;
         }
 
-        async Task<AuthorEntity> InterfaceRepositories<AuthorEntity>.GetAsync(int id)
+        public async Task<AuthorEntity> GetAsync(int id)
         {
-            return _context.Authors.SingleOrDefault(x => x.Id == id);
+            var Author = await _context.Authors.Include(x => x.Books).SingleOrDefaultAsync(x => x.Id == id);
+            return Author;
+        }
+
+        public async Task<List<int>> GetBookIds(Author author) 
+        {
+            List<int> AllBooksIds = await _context.Books.Select(book => book.Id).ToListAsync();
+            
+           return AllBooksIds.Where(id => author.BookIds.Contains(id)).ToList();
         }
     }
 }
