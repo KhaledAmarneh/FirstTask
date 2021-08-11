@@ -27,15 +27,10 @@ namespace FirstTask.Repositories
             return book;
         }
 
-        public async Task DeleteAsync(int id)
-        {
-            var Book = _context.Books.FirstOrDefault(x => x.Id == id);
-
-            if (Book != null)
-            {
-                _context.Books.Remove(Book);
-                await _context.SaveChangesAsync();
-            }
+        public async Task DeleteAsync(BookEntity book)
+        {   
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();   
         }
 
         public async Task<IEnumerable<BookEntity>> GetAllAsync()
@@ -56,11 +51,11 @@ namespace FirstTask.Repositories
             return Book;
         }
 
-        public async Task UpdateAsync(BookEntity book, int id)
+        public async Task UpdateAsync(BookEntity book)
         {
-            book.Id = id;
             _context.Books.Update(book);
             await _context.SaveChangesAsync();
+
         }
     }
 }

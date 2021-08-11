@@ -25,11 +25,6 @@ namespace FirstTask.Repositories
         }
 
 
-        /*public Task Contains(Func<Book, bool> exp) {
-            _context.Books.Where(x => author.BookIds?.Contains(x.Id));[0,3].cont..(x => x.id).toList()[0]
-        }*/
-
-
         public async Task<AuthorEntity> CreateAsync(AuthorEntity author)
         {
             _context.Authors.Add(author);
@@ -39,15 +34,11 @@ namespace FirstTask.Repositories
 
 
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(AuthorEntity author)
         {
-            var Author = _context.Authors.FirstOrDefault(x => x.Id == id);
-
-            if (Author != null)
-            {
-                _context.Authors.Remove(Author);
+  
+                _context.Authors.Remove(author);
                 await _context.SaveChangesAsync();
-            }
         }
 
         public async Task UpdateAsync(AuthorEntity author)
@@ -72,11 +63,11 @@ namespace FirstTask.Repositories
             return Author;
         }
 
-        public async Task<List<int>> GetBookIds(Author author) 
+        public async Task<List<int>> GetBookIds(Author author)
         {
             List<int> AllBooksIds = await _context.Books.Select(book => book.Id).ToListAsync();
-            
-           return AllBooksIds.Where(id => author.BookIds.Contains(id)).ToList();
+
+            return AllBooksIds.Where(id => author.BookIds.Contains(id)).ToList();
         }
     }
 }

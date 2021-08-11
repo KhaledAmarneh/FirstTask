@@ -1,4 +1,5 @@
 using ContosoPizza.Controllers;
+using FirstTask.Bussiness;
 using FirstTask.Entities;
 using FirstTask.Interfaces;
 using FirstTask.Repositories;
@@ -38,7 +39,8 @@ namespace FirstTask
             GetConnectionString("FirstDatabase")));
             services.AddScoped<IBook, BookRepository>();
             services.AddScoped<IAuthor, AuthorRepository>();
-     
+            services.AddScoped<IBussinessAuthor, BussinessAuthor>();
+            services.AddScoped<IBussinessBook, BussinessBook>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

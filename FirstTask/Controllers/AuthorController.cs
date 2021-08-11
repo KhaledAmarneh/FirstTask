@@ -16,23 +16,21 @@ namespace FirstTask.Controllers
     public class AuthorController : ControllerBase
     {
 
-        private readonly IAuthor _authorRepository;
-        private readonly IBook _bookRepository;
+        private readonly IBussinessAuthor _authorBussiness;
+        private readonly IBussinessBook _bookBussiness;
 
-        public AuthorController(IAuthor authorRepository, IBook bookRepository)
+        public AuthorController(IBussinessAuthor authorBussiness, IBussinessBook bookBussiness)
         {
-            _authorRepository = authorRepository;
-            _bookRepository = bookRepository;
+            _authorBussiness = authorBussiness;
+            _bookBussiness = bookBussiness;
 
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AuthorResource>>> GetAll()
         {
-            var authors = await _authorRepository.GetAllAsync();
-            if (authors == null)
-                return NotFound("No Authors Yet!");
-            return Ok(authors.Select(author => author.AuthorEntityToResource()).ToList());
+            var authors = await _authorBussiness.GetAllAsync();
+            return Ok(authors);
 
 
         }
@@ -42,80 +40,34 @@ namespace FirstTask.Controllers
         public async Task<ActionResult<AuthorResource>> Get(int id)
         {
 
-            var author = await _authorRepository.GetAsync(id);
-            if (author == null)
-                return NotFound($"Author with Id: {id} does not exist.");
-
-            return author.AuthorEntityToResource();
+            var author = await _authorBussiness.GetAsync(id);
+            return author;
         }
 
 
         [HttpPost]
         public async Task<ActionResult<AuthorResource>> Create([FromBody] Author author)
         {
-            var authorEntity = author.AuthorModelToEntity();
-            List<int> ListOfBookids = await _authorRepository.GetBookIds(author);
-            if (ListOfBookids?.Count == 0)
-            {
-                throw new Exception("Invalid ids");
-            }
-            else if (author.BookIds.Count != ListOfBookids?.Count)
-            {
 
-                throw new Exception("There is an invalid id");
-            }
-            else
-            {
-                authorEntity.Books = ListOfBookids.Select(async bookId => await _bookRepository.GetAsyncWithoutAuthors(bookId)).Select(x => x.Result).Where(y => y != null).ToList();
-                var authorResource = _authorRepository.CreateAsync(authorEntity);
-                return Ok((await authorResource).AuthorEntityToResource());
-            }
+            var authorResource = await _authorBussiness.CreateAsync(author);
+            return Ok(authorResource);
         }
+
 
 
         [HttpPut("{id}")]
         public async Task<ActionResult<AuthorResource>> Update(Author author, int id)
         {
-            
+            var authorResource = await _authorBussiness.UpdateAsync(author, id);
 
-            var authorEntity = author.AuthorModelToEntity();
-            authorEntity.Id = id;
-            List<int> ListOfBookids = await _authorRepository.GetBookIds(author);//[1,2]
-
-
-            if (ListOfBookids?.Count == 0)
-            {
-                throw new Exception("Invalid ids");
-            }
-            else if (author.BookIds.Count != ListOfBookids?.Count)
-            {
-                throw new Exception("There is an invalid id");
-            }
-            else
-            {
-                authorEntity.Books = ListOfBookids.Select(async bookId => await _bookRepository.GetAsyncWithoutAuthors(bookId)).Select(x => x.Result).Where(y => y != null).ToList();
-                await _authorRepository.UpdateAsync(authorEntity);
-                return Ok(authorEntity.AuthorEntityToResource());
-            }
+            return Ok(authorResource);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            //    var author = _DataContext.Authors.FirstOrDefault(x => x.Id == id);
-
-            //    if (author != null)
-            //    {
-            //        _DataContext.Authors.Remove(author);
-            //        _DataContext.SaveChanges();
-            //    }
-            //    else
-            //        return NotFound($"author with Id: {id} does not exist.");
-            //    return NoContent();
-            //}
-
-
-            await _authorRepository.DeleteAsync(id);
+            await _authorBussiness.DeleteAsync(id);
             return Ok();
 
         }

@@ -13,7 +13,7 @@ namespace FirstTask.Interfaces
         Task<IEnumerable<AuthorEntity>> GetAllAsync();
         Task<AuthorEntity> GetAsync(int id);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(AuthorEntity author);
 
         Task UpdateAsync(AuthorEntity author );
 

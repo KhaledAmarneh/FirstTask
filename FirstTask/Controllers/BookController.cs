@@ -1,11 +1,8 @@
 using ContosoPizza.Models;
-using FirstTask.Entities;
 using FirstTask.Interfaces;
-using FirstTask.Repositories;
 using FirstTask.Resources;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ContosoPizza.Controllers
@@ -16,52 +13,46 @@ namespace ContosoPizza.Controllers
     {
 
 
-        private readonly IBook _bookRepository;
-        public BookController(IBook bookRepository)
+        private readonly IBussinessBook _bookBussiness;
+        public BookController(IBussinessBook bookBussiness)
         {
-            _bookRepository = bookRepository;
+            _bookBussiness = bookBussiness;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookResource>>> GetAll()
         {
-            var books = await _bookRepository.GetAllAsync();
-            if (books == null)
-                return NotFound("No Books Yet!");
-            return Ok(books.Select(book => book.BookEntityToResource()).ToList());
+            var books = await _bookBussiness.GetAllAsync();
+            return Ok(books);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<BookResource>> Get(int id)
         {
-            var book = await _bookRepository.GetAsync(id);
-            if (book == null)
-                return NotFound($"Book with Id: {id} does not exist.");
-            return Ok(book.BookEntityToResource());
+            var book = await _bookBussiness.GetAsync(id);
+            return Ok(book);
         }
 
         [HttpPost]
         public async Task<ActionResult<BookResource>> Create([FromBody] Book book)
         {
-            var BookEntity = book.BookModelToEntity();
-            var BookResource = _bookRepository.CreateAsync(BookEntity);
 
-            return Ok((await BookResource).BookEntityToResource());
+            var BookResource = await _bookBussiness.CreateAsync(book);
+            return Ok(BookResource);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<BookResource>> Update(Book book, int id)
         {
-            var x = book.BookModelToEntity(); 
-            x.Id = id;
-            await _bookRepository.UpdateAsync(x, id); 
-            return Ok(x.BookEntityToResource());
+            var BookResource = await _bookBussiness.UpdateAsync(book, id);
+            return Ok(BookResource);
         }
 
         [HttpDelete("{id}")]
-        public async Task Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            await _bookRepository.DeleteAsync(id);
+            await _bookBussiness.DeleteAsync(id);
+            return Ok();
         }
 
     }

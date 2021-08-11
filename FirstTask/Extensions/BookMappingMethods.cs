@@ -26,7 +26,6 @@ public static class BookMappingMethods
         return new BookEntity
         {
             Name = book.Name,
-
             Title = book.Title,
         };
     }
