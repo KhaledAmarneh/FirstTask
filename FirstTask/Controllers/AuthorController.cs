@@ -1,13 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using ContosoPizza.Models;
 using FirstTask.Resources;
-using System;
 using FirstTask.Interfaces;
-using FirstTask.Entities;
 using System.Threading.Tasks;
-using ContosoPizza.Controllers;
+
 
 namespace FirstTask.Controllers
 {
@@ -17,38 +14,32 @@ namespace FirstTask.Controllers
     {
 
         private readonly IBussinessAuthor _authorBussiness;
-        private readonly IBussinessBook _bookBussiness;
+        
 
-        public AuthorController(IBussinessAuthor authorBussiness, IBussinessBook bookBussiness)
+        public AuthorController(IBussinessAuthor authorBussiness)
         {
             _authorBussiness = authorBussiness;
-            _bookBussiness = bookBussiness;
-
+           
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AuthorResource>>> GetAll()
         {
-            var authors = await _authorBussiness.GetAllAsync();
-            return Ok(authors);
-
+            var authorResources = await _authorBussiness.GetAllAsync();
+            return Ok(authorResources);
 
         }
-
 
         [HttpGet("{id}")]
         public async Task<ActionResult<AuthorResource>> Get(int id)
         {
-
-            var author = await _authorBussiness.GetAsync(id);
-            return author;
+            var authorResource = await _authorBussiness.GetAsync(id);
+            return Ok(authorResource);
         }
-
 
         [HttpPost]
         public async Task<ActionResult<AuthorResource>> Create([FromBody] Author author)
         {
-
             var authorResource = await _authorBussiness.CreateAsync(author);
             return Ok(authorResource);
         }
@@ -59,7 +50,6 @@ namespace FirstTask.Controllers
         public async Task<ActionResult<AuthorResource>> Update(Author author, int id)
         {
             var authorResource = await _authorBussiness.UpdateAsync(author, id);
-
             return Ok(authorResource);
         }
 
@@ -69,7 +59,6 @@ namespace FirstTask.Controllers
         {
             await _authorBussiness.DeleteAsync(id);
             return Ok();
-
         }
     }
 }

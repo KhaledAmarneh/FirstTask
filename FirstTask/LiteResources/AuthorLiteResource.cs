@@ -1,7 +1,3 @@
-using FirstTask.Entities;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
 namespace FirstTask.Resources
 
 {

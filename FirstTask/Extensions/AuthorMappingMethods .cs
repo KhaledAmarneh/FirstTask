@@ -1,8 +1,6 @@
 using ContosoPizza.Models;
 using FirstTask.Entities;
 using FirstTask.Resources;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 public static class AuthorMappingMethods

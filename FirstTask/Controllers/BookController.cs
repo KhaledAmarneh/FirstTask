@@ -12,7 +12,6 @@ namespace ContosoPizza.Controllers
     public class BookController : ControllerBase
     {
 
-
         private readonly IBussinessBook _bookBussiness;
         public BookController(IBussinessBook bookBussiness)
         {
@@ -22,30 +21,30 @@ namespace ContosoPizza.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookResource>>> GetAll()
         {
-            var books = await _bookBussiness.GetAllAsync();
-            return Ok(books);
+            var bookResources = await _bookBussiness.GetAllAsync();
+            return Ok(bookResources);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<BookResource>> Get(int id)
         {
-            var book = await _bookBussiness.GetAsync(id);
-            return Ok(book);
+            var bookResource = await _bookBussiness.GetAsync(id);
+            return Ok(bookResource);
         }
 
         [HttpPost]
         public async Task<ActionResult<BookResource>> Create([FromBody] Book book)
         {
 
-            var BookResource = await _bookBussiness.CreateAsync(book);
-            return Ok(BookResource);
+            var bookResource = await _bookBussiness.CreateAsync(book);
+            return Ok(bookResource);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<BookResource>> Update(Book book, int id)
         {
-            var BookResource = await _bookBussiness.UpdateAsync(book, id);
-            return Ok(BookResource);
+            var bookResource = await _bookBussiness.UpdateAsync(book, id);
+            return Ok(bookResource);
         }
 
         [HttpDelete("{id}")]

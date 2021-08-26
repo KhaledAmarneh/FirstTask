@@ -1,4 +1,3 @@
-using ContosoPizza.Models;
 using FirstTask.Entities;
 using Microsoft.EntityFrameworkCore;
 

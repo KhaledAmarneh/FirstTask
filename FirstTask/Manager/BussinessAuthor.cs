@@ -1,5 +1,4 @@
 ﻿using ContosoPizza.Models;
-using FirstTask.Entities;
 using FirstTask.Interfaces;
 using FirstTask.Resources;
 using Microsoft.AspNetCore.Mvc;
@@ -58,15 +57,13 @@ namespace FirstTask.Bussiness
             {
                 throw new Exception("Author Doesn't Exist!!");
             }
-                
-            
-        
+
     }
 
         public async Task<IEnumerable<AuthorResource>> GetAllAsync()
         {
             var authors = await _authorRepository.GetAllAsync();
-            if(authors == null)
+            if(authors is null)
 
             {
                 throw new Exception("No Authors Yet!!");

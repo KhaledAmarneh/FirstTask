@@ -31,14 +31,12 @@ namespace FirstTask.Bussiness
         public async Task DeleteAsync(int id)
         {
             var book = await _bookRepository.GetAsync(id);
-            if (book != null)
-            {
-                await _bookRepository.DeleteAsync(book);
-            }
-            else
+            if (book == null)
             {
                 throw new Exception("Book Doesn't Exist!!");
+               
             }
+            await _bookRepository.DeleteAsync(book);
 
         }
 
@@ -57,7 +55,6 @@ namespace FirstTask.Bussiness
         {
             var book = await _bookRepository.GetAsync(id);
             if (book == null)
-
             {
                 throw new Exception("Book Doesn't Exist!!");
             }
@@ -72,7 +69,9 @@ namespace FirstTask.Bussiness
         public async Task<BookResource> UpdateAsync(Book book, int id)
         {
 
-            var oldBook = await _bookRepository.GetAsync(id); // this entity is tracked.
+
+            // This entity is tracked.
+            var oldBook = await _bookRepository.GetAsync(id); 
 
             if (oldBook == null)
             {

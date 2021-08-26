@@ -15,7 +15,7 @@ public static class BookMappingMethods
             Name = book.Name,
             Title = book.Title,
             Id = book.Id,
-            Authors = book.Authors.Select(author => author.AuthorEntityToAuthorLiteResource()).ToList()
+            Authors = book.Authors?.Select(author => author.AuthorEntityToAuthorLiteResource()).ToList()
 
         };
     }

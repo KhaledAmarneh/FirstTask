@@ -20,8 +20,6 @@ namespace FirstTask.Repositories
 
         public async Task<BookEntity> CreateAsync(BookEntity book)
         {
-
-
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
             return book;
