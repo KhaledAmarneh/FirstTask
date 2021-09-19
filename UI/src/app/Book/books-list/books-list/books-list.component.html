@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-md-8">
+      <h3>Books List</h3>
+
+      <div>
+        <a href="#" class="btn btn-primary" [routerLink]="['/add']"
+          >Add Book</a
+        >
+      </div>
+  
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Actions</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let book of books | async">
+            <td>{{ book.Name }}</td>
+            <td>{{ book.Title }}</td>
+            <td>
+                <a href="" class="btn btn-primary" [routerLink]="['edit', book.Id]"
+                  >Update
+                </a>
+                &nbsp;
+            <button class="btn btn-danger" (click)="onDeleteBook(book.Id)">
+              Delete
+            </button>
+
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-4">
+        <router-outlet></router-outlet>
+      </div>
+  </div>

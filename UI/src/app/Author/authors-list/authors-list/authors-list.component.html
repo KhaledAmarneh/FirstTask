@@ -1,0 +1,43 @@
+<div class="row">
+    <div class="col-md-8">
+      <h3>Authors List</h3>
+
+      <div>
+        <a href="#" class="btn btn-primary" [routerLink]="['add']"
+          >Add Author</a
+        >
+      </div>
+  
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Books</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let author of authors | async">
+            <td>{{ author.Name }}</td>
+            <td> <p *ngFor="let book of author.Books">
+              {{book.Name}}
+          </p>
+              </td>
+            
+            <td>
+                <a href="" class="btn btn-primary" [routerLink]="['edit', author.Id]"
+                  >Update
+                </a>
+                &nbsp;
+                <button class="btn btn-danger" (click)="onDeleteAuthor(author.Id)">
+                  Delete
+                </button>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-4">
+        <router-outlet></router-outlet>
+      </div>
+  </div>

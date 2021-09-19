@@ -1,0 +1,59 @@
+<div class="row my-4">
+    <div class="col-md-12">
+      <h3>Update Book</h3>
+      <hr />
+      
+
+     
+      <form [formGroup]="bookForm" (ngSubmit)="onUpdateBook()">
+        <div class="mb-3">
+          <label>Name</label>
+          <input type="text" class="form-control" formControlName="name" />
+  
+          <div
+            *ngIf="bookForm.get('name').touched && !bookForm.get('name').valid"
+          >
+            <div *ngIf="bookForm.get('name').errors.required">
+              Name is required
+            </div>
+            <div *ngIf="bookForm.get('name').errors.minlength">
+              Name should be minimum 3 characters
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+            <label>Title</label>
+            <input type="text" class="form-control" formControlName="title" />
+    
+            <div
+              *ngIf="bookForm.get('title').touched && !bookForm.get('title').valid"
+            >
+              <div *ngIf="bookForm.get('title').errors.required">
+                Title is required
+              </div>
+              <div *ngIf="bookForm.get('title').errors.minlength">
+                Title should be minimum 3 characters
+              </div>
+            </div>
+          </div>
+
+        
+
+        
+          
+        
+  
+        <div class="my-3">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!bookForm.valid"
+          >
+            Update Book
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
