@@ -49,8 +49,8 @@ namespace FirstTask
    
            (o => o.UseSqlServer(Configuration.
             GetConnectionString("FirstDatabase")));
-            services.AddScoped<IBook, BookRepository>();
-            services.AddScoped<IAuthor, AuthorRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IBussinessAuthor, BussinessAuthor>();
             services.AddScoped<IBussinessBook, BussinessBook>();
             services.AddControllers();

@@ -1,7 +1,7 @@
 namespace FirstTask.Resources
 
 {
-    public class AuthorLiteResource
+    public class AuthorLiteResource 
     {
         public int Id { get; set; }
 

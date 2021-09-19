@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FirstTask.Resources
 {
-    public class BookResource
+    public class BookResource 
     {
         public int Id { get; set; }
 

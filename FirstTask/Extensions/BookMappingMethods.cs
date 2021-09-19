@@ -8,29 +8,29 @@ public static class BookMappingMethods
 
 
 {
-    public static BookResource BookEntityToResource(this BookEntity book)
+    public static BookResource MapBookEntityToResource(this Book book)
     {
         return new BookResource
         {
             Name = book.Name,
             Title = book.Title,
             Id = book.Id,
-            Authors = book.Authors?.Select(author => author.AuthorEntityToAuthorLiteResource()).ToList()
+            Authors = book.Authors?.Select(author => author.MapAuthorEntityToAuthorLiteResource()).ToList()
 
         };
     }
 
 
-    public static BookEntity BookModelToEntity(this Book book)
+    public static Book MapBookModelToEntity(this BookModel book)
     {
-        return new BookEntity
+        return new Book
         {
             Name = book.Name,
             Title = book.Title,
         };
     }
 
-    public static BookLiteResource BookEntityToBookLiteResource(this BookEntity book)
+    public static BookLiteResource MapBookEntityToBookLiteResource(this Book book)
     {
         return new BookLiteResource
         {

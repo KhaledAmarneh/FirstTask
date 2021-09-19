@@ -7,24 +7,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
+public interface IBussinessBook
+{
+    Task<IEnumerable<BookResource>> GetAllAsync();
+    Task<BookResource> GetAsync(int id);
+    Task<Book> GetAsyncWithoutAuthors(int id);
+    Task DeleteAsync(int id);
+    Task<BookResource> UpdateAsync(BookModel book, int id);
+    Task<BookResource> CreateAsync(BookModel book);
+
+}
+
 namespace FirstTask.Bussiness
 {
+
+
+
     public class BussinessBook : IBussinessBook
     {
 
-        private readonly IBook _bookRepository;
+        private readonly IBookRepository _bookRepository;
 
-        public BussinessBook(IBook bookRepository)
+        public BussinessBook(IBookRepository bookRepository)
         {
             
             _bookRepository = bookRepository;
 
         }
-        public async Task<BookResource> CreateAsync(Book book)
+        public async Task<BookResource> CreateAsync(BookModel book)
         {
-            var BookEntity = book.BookModelToEntity();
+            var BookEntity = book.MapBookModelToEntity();
             var BookResource = await _bookRepository.CreateAsync(BookEntity);
-            return BookResource.BookEntityToResource();
+            return BookResource.MapBookEntityToResource();
 
         }
 
@@ -48,7 +63,7 @@ namespace FirstTask.Bussiness
             {
                 throw new Exception("No Books Yet!!");
             }
-            return books.Select(book => book.BookEntityToResource()).ToList();
+            return books.Select(book => book.MapBookEntityToResource()).ToList();
         }
 
         public async Task<BookResource> GetAsync(int id)
@@ -58,30 +73,29 @@ namespace FirstTask.Bussiness
             {
                 throw new Exception("Book Doesn't Exist!!");
             }
-            return book.BookEntityToResource();
+            return book.MapBookEntityToResource();
         }
 
-        public Task<BookEntity> GetAsyncWithoutAuthors(int id)
+        public Task<Book> GetAsyncWithoutAuthors(int id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<BookResource> UpdateAsync(Book book, int id)
+        public async Task<BookResource> UpdateAsync(BookModel book, int id)
         {
-
-
             // This entity is tracked.
-            var oldBook = await _bookRepository.GetAsync(id); 
+            var bookEntity = await _bookRepository.GetAsync(id); 
 
-            if (oldBook == null)
+            if (bookEntity == null)
             {
                 throw new Exception("Book Doesn't Exist!!");
             }
-            oldBook.Name = book.Name;
-            oldBook.Title = book.Title;
-            await _bookRepository.UpdateAsync(oldBook);
-            return oldBook.BookEntityToResource();
+            bookEntity.Name = book.Name;
+            bookEntity.Title = book.Title;
+            await _bookRepository.UpdateAsync(bookEntity);
+            return bookEntity.MapBookEntityToResource();
 
         }
     }
 }
+

@@ -1,32 +1,35 @@
 using ContosoPizza.Models;
 using FirstTask.Entities;
 using FirstTask.Resources;
+using System.Collections.Generic;
 using System.Linq;
 
 public static class AuthorMappingMethods
 
 {
-    public static AuthorResource AuthorEntityToResource(this AuthorEntity author)
+    public static AuthorResource MapAuthorEntityToResource(this Author author)
     {
         return new AuthorResource
         {
             Name = author.Name,
             Id = author.Id,
-            Books = author.Books.Select(book => book.BookEntityToBookLiteResource()).ToList(),
+            Books = author.Books.Select(book => book.MapBookEntityToBookLiteResource()).ToList(),
         };
     }
 
 
-    public static AuthorEntity AuthorModelToEntity(this Author author)
+    public static Author MapAuthorModelToEntity(this AuthorModel author, List<Book> books)
     {
-        return new AuthorEntity
+        return new Author
         {
             Name = author.Name,
+            Books = books
+ 
         };
     }
 
 
-    public static AuthorLiteResource AuthorEntityToAuthorLiteResource(this AuthorEntity author)
+    public static AuthorLiteResource MapAuthorEntityToAuthorLiteResource(this Author author)
     {
         return new AuthorLiteResource
         {
@@ -35,13 +38,6 @@ public static class AuthorMappingMethods
         };
     }
 
-    public static Author AuthorEntityToModel(this AuthorEntity author)
-    {
-        return new Author
-        {
-            Name = author.Name,
-            BookIds = author.Books.Select(x => x.Id).ToList(),
-        };
-    }
+   
 
 }

@@ -1,13 +1,15 @@
+
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContosoPizza.Models
 {
-    public class Author
-    {   
+    public class BookModel
+    {
+       
         public string Name { get; set; }
-        public List<int> BookIds { get; set; }
-        //public ICollection<Book> Books { get; set; }
 
+        public string Title { get; set; }
+        
     }
 }

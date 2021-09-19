@@ -33,7 +33,7 @@ namespace ContosoPizza.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BookResource>> Create([FromBody] Book book)
+        public async Task<ActionResult<BookResource>> Create([FromBody] BookModel book)
         {
 
             var bookResource = await _bookBussiness.CreateAsync(book);
@@ -41,7 +41,7 @@ namespace ContosoPizza.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<BookResource>> Update(Book book, int id)
+        public async Task<ActionResult<BookResource>> Update(BookModel book, int id)
         {
             var bookResource = await _bookBussiness.UpdateAsync(book, id);
             return Ok(bookResource);

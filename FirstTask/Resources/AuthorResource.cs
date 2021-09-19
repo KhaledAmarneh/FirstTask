@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace FirstTask.Resources
 
 {
-    public class AuthorResource
+    public class AuthorResource 
     {
         public int Id { get; set; }
 

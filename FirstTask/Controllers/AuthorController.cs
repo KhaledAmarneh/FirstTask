@@ -38,7 +38,7 @@ namespace FirstTask.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AuthorResource>> Create([FromBody] Author author)
+        public async Task<ActionResult<AuthorResource>> Create([FromBody] AuthorModel author)
         {
             var authorResource = await _authorBussiness.CreateAsync(author);
             return Ok(authorResource);
@@ -47,7 +47,7 @@ namespace FirstTask.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AuthorResource>> Update(Author author, int id)
+        public async Task<ActionResult<AuthorResource>> Update(AuthorModel author, int id)
         {
             var authorResource = await _authorBussiness.UpdateAsync(author, id);
             return Ok(authorResource);

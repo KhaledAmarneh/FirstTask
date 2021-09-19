@@ -2,14 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FirstTask.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210908084707_Third")]
+    partial class Third
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,21 +67,6 @@ namespace FirstTask.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("FirstTask.Entities.BookAuthor", b =>
-                {
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BookId", "AuthorId");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("BooksAuthors");
-                });
-
             modelBuilder.Entity("AuthorBook", b =>
                 {
                     b.HasOne("FirstTask.Entities.Author", null)
@@ -93,35 +80,6 @@ namespace FirstTask.Migrations
                         .HasForeignKey("BooksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FirstTask.Entities.BookAuthor", b =>
-                {
-                    b.HasOne("FirstTask.Entities.Author", "Author")
-                        .WithMany("BooksAuthors")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FirstTask.Entities.Book", "Book")
-                        .WithMany("BooksAuthors")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("FirstTask.Entities.Author", b =>
-                {
-                    b.Navigation("BooksAuthors");
-                });
-
-            modelBuilder.Entity("FirstTask.Entities.Book", b =>
-                {
-                    b.Navigation("BooksAuthors");
                 });
 #pragma warning restore 612, 618
         }

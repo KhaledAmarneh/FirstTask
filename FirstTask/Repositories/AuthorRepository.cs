@@ -7,9 +7,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+public interface IAuthorRepository
+{
+    Task<IEnumerable<Author>> GetAllAsync();
+    Task<Author> GetAsync(int id);
+
+    Task DeleteAsync(Author author);
+
+    Task UpdateAsync(Author author);
+
+    Task<Author> CreateAsync(Author author);
+
+    //Task<List<int>> GetBookIds(AuthorModel author);
+
+}
+
+
+
+
 namespace FirstTask.Repositories
 {
-    public class AuthorRepository : IAuthor
+    public class AuthorRepository : IAuthorRepository
     {
         private readonly DataContext _context;
 
@@ -25,7 +43,7 @@ namespace FirstTask.Repositories
         }
 
 
-        public async Task<AuthorEntity> CreateAsync(AuthorEntity author)
+        public async Task<Author> CreateAsync(Author author)
         {
             _context.Authors.Add(author);
             await _context.SaveChangesAsync();
@@ -34,40 +52,38 @@ namespace FirstTask.Repositories
 
 
 
-        public async Task DeleteAsync(AuthorEntity author)
+        public async Task DeleteAsync(Author author)
         {
   
                 _context.Authors.Remove(author);
                 await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(AuthorEntity author)
+        public async Task UpdateAsync(Author author)
         {
-            var Author = await GetAsync(author.Id); //Tracked from Database
-            Author.Books.Clear(); //Delete old books from the database
-            Author.Books = author.Books; //Here author.books not tracked from database it cointains the required books so we put the books in x.Books(in database)
-            Author.Name = author.Name;
-            _context.Authors.Update(Author);
+            _context.Authors.Update(author);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<AuthorEntity>> GetAllAsync()
+        public async Task<IEnumerable<Author>> GetAllAsync()
         {
-            List<AuthorEntity> Authors = await _context.Authors.Include(x => x.Books).ToListAsync();
-            return Authors;
+            return await _context.Authors.Include(x => x.Books).ToListAsync();
         }
 
-        public async Task<AuthorEntity> GetAsync(int id)
+        public async Task<Author> GetAsync(int id)
         {
             var Author = await _context.Authors.Include(x => x.Books).SingleOrDefaultAsync(x => x.Id == id);
             return Author;
         }
 
-        public async Task<List<int>> GetBookIds(Author author)
-        {
-            List<int> AllBooksIds = await _context.Books.Select(book => book.Id).ToListAsync();
+        //public async Task<List<int>> GetBookIds(AuthorModel author)
+        //{
+            
 
-            return AllBooksIds.Where(id => author.BookIds.Contains(id)).ToList();
-        }
+        //    List<int> AllBooksIds = await _context.Books.Select(book => book.Id).ToListAsync();
+
+        //    return AllBooksIds.Where(id => author.BookIds.Contains(id)).ToList();
+        //}
     }
 }
+ 
