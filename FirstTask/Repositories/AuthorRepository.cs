@@ -24,7 +24,6 @@ public interface IAuthorRepository
 
 
 
-
 namespace FirstTask.Repositories
 {
     public class AuthorRepository : IAuthorRepository
